@@ -28,8 +28,6 @@ async function run() {
         // API for getting user form client side and saving it to database
         app.post("/users", async (req, res) => {
             const newUser = req.body;
-            console.log(`User data: `, newUser);
-
             const result = await usersCollection.insertOne(newUser);
 
             res.send(result);
@@ -43,15 +41,22 @@ async function run() {
             res.send(users);
         });
 
+        // API for getting a specific user
+        app.get("/users/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const user = await usersCollection.findOne(query);
+
+            res.send(user);
+        });
+
         // API for deleting user
         app.delete("/users", async (req, res) => {
             const { userId } = req.body;
-            const query = {_id: new ObjectId(userId)}
-            const result = await usersCollection.deleteOne(query) 
+            const query = { _id: new ObjectId(userId) };
+            const result = await usersCollection.deleteOne(query);
 
-            console.log(result)
-
-            res.send(result)
+            res.send(result);
         });
     } finally {
         // await client.close();
