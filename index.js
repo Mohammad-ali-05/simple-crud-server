@@ -25,7 +25,7 @@ async function run() {
         const usersDB = client.db("usersDB");
         const usersCollection = usersDB.collection("users");
 
-        // API for getting user
+        // API for getting user form client side and saving it to database
         app.post("/users", async (req, res) => {
             const newUser = req.body;
             console.log(`User data: `, newUser);
@@ -34,6 +34,16 @@ async function run() {
 
             res.send(result);
         });
+
+        // API for getting all users data
+        app.get("/users", async (req, res) => {
+            const cursor = usersCollection.find()
+            const users = await cursor.toArray()
+
+            res.send(users)
+        }) 
+
+
     } finally {
         // await client.close();
     }
