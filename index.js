@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 3000;
@@ -37,13 +37,22 @@ async function run() {
 
         // API for getting all users data
         app.get("/users", async (req, res) => {
-            const cursor = usersCollection.find()
-            const users = await cursor.toArray()
+            const cursor = usersCollection.find();
+            const users = await cursor.toArray();
 
-            res.send(users)
-        }) 
+            res.send(users);
+        });
 
+        // API for deleting user
+        app.delete("/users", async (req, res) => {
+            const { userId } = req.body;
+            const query = {_id: new ObjectId(userId)}
+            const result = await usersCollection.deleteOne(query) 
 
+            console.log(result)
+
+            res.send(result)
+        });
     } finally {
         // await client.close();
     }
